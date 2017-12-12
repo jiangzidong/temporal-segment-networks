@@ -38,5 +38,20 @@ for i, agg_score in enumerate(agg_score_list):
     final_scores += agg_score * score_weights[i]
 
 # accuracy
-acc = mean_class_accuracy(final_scores, label_list[0])
+#
+from sklearn.metrics import confusion_matrix
+def mean_class_accuracy_jzd(scores, labels):
+    pred = np.argmax(scores, axis=1)
+
+    np.savetxt("./label_out.txt", pred, fmt="%d");
+    np.savetxt("./label_expect.txt", labels, fmt="%d");
+
+    cf = confusion_matrix(labels, pred).astype(float)
+
+    cls_cnt = cf.sum(axis=1)
+    cls_hit = np.diag(cf)
+
+    return np.mean(cls_hit/cls_cnt)
+
+acc = mean_class_accuracy_jzd(final_scores, label_list[0])
 print 'Final accuracy {:02f}%'.format(acc * 100)

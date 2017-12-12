@@ -48,6 +48,10 @@ gpu_list = args.gpus
 
 eval_video_list = split_tp[args.split - 1][1]
 
+file_name_list = [x[0] for x in eval_video_list];
+np.savetxt("./file_name.txt", file_name_list, fmt="%s");
+
+print eval_video_list
 score_name = 'fc-action'
 
 
@@ -95,7 +99,6 @@ def eval_video(video):
             name = '{}{:05d}.jpg'.format(args.rgb_prefix, tick)
             frame = cv2.imread(os.path.join(video_frame_path, name), cv2.IMREAD_COLOR)
             scores = net.predict_single_frame([frame,], score_name, frame_size=(340, 256))
-            #print(scores.shape)
             frame_scores.append(scores)
         if args.modality == 'flow':
             frame_idx = [min(frame_cnt, tick+offset) for offset in xrange(stack_depth)]
@@ -105,12 +108,7 @@ def eval_video(video):
                 y_name = '{}{:05d}.jpg'.format(args.flow_y_prefix, idx)
                 flow_stack.append(cv2.imread(os.path.join(video_frame_path, x_name), cv2.IMREAD_GRAYSCALE))
                 flow_stack.append(cv2.imread(os.path.join(video_frame_path, y_name), cv2.IMREAD_GRAYSCALE))
-                #print(x_name, y_name)
-            img_name = '{}{:05d}.jpg'.format(args.rgb_prefix, frame_idx[0])
-            flow_stack.append(cv2.imread(os.path.join(video_frame_path, img_name), cv2.IMREAD_GRAYSCALE))
-            #print(img_name)
             scores = net.predict_single_flow_stack(flow_stack, score_name, frame_size=(340, 256))
-            #print (scores.shape)
             frame_scores.append(scores)
 
     print 'video {} done'.format(vid)
@@ -127,6 +125,9 @@ else:
 video_pred = [np.argmax(default_aggregation_func(x[0])) for x in video_scores]
 video_labels = [x[1] for x in video_scores]
 
+np.savetxt("./label_out.txt", video_pred, fmt="%d");
+np.savetxt("./label_expect.txt", video_labels, fmt="%d");
+
 cf = confusion_matrix(video_labels, video_pred).astype(float)
 
 cls_cnt = cf.sum(axis=1)
@@ -140,7 +141,6 @@ print 'Accuracy {:.02f}%'.format(np.mean(cls_acc)*100)
 
 if args.save_scores is not None:
     np.savez(args.save_scores, scores=video_scores, labels=video_labels)
-
 
 
 

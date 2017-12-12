@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+!/usr/bin/env bash
 
 DATASET=$1
 MODALITY=$2
@@ -11,6 +11,10 @@ MPI_BIN_DIR= #/usr/local/openmpi/bin/
 
 echo "logging to ${LOG_FILE}"
 
+
+
+echo "logging to ${LOG_FILE}"
+
 ${MPI_BIN_DIR}mpirun -np $N_GPU \
 $TOOLS/caffe train --solver=models/${DATASET}/tsn_bn_inception_${MODALITY}_solver.prototxt  \
-   --weights=models/bn_inception_${MODALITY}_init.caffemodel 2>&1 | tee ${LOG_FILE}
+   --weights=models/${DATASET}_split_1_tsn_${MODALITY}_reference_bn_inception.caffemodel 2>&1 | tee ${LOG_FILE}

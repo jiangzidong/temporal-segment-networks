@@ -95,7 +95,6 @@ def eval_video(video):
             name = '{}{:05d}.jpg'.format(args.rgb_prefix, tick)
             frame = cv2.imread(os.path.join(video_frame_path, name), cv2.IMREAD_COLOR)
             scores = net.predict_single_frame([frame,], score_name, frame_size=(340, 256))
-            #print(scores.shape)
             frame_scores.append(scores)
         if args.modality == 'flow':
             frame_idx = [min(frame_cnt, tick+offset) for offset in xrange(stack_depth)]
@@ -105,12 +104,7 @@ def eval_video(video):
                 y_name = '{}{:05d}.jpg'.format(args.flow_y_prefix, idx)
                 flow_stack.append(cv2.imread(os.path.join(video_frame_path, x_name), cv2.IMREAD_GRAYSCALE))
                 flow_stack.append(cv2.imread(os.path.join(video_frame_path, y_name), cv2.IMREAD_GRAYSCALE))
-                #print(x_name, y_name)
-            img_name = '{}{:05d}.jpg'.format(args.rgb_prefix, frame_idx[0])
-            flow_stack.append(cv2.imread(os.path.join(video_frame_path, img_name), cv2.IMREAD_GRAYSCALE))
-            #print(img_name)
             scores = net.predict_single_flow_stack(flow_stack, score_name, frame_size=(340, 256))
-            #print (scores.shape)
             frame_scores.append(scores)
 
     print 'video {} done'.format(vid)

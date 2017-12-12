@@ -12,5 +12,5 @@ MPI_BIN_DIR= #/usr/local/openmpi/bin/
 echo "logging to ${LOG_FILE}"
 
 ${MPI_BIN_DIR}mpirun -np $N_GPU \
-$TOOLS/caffe train --solver=models/${DATASET}/tsn_bn_inception_${MODALITY}_solver.prototxt  \
-   --weights=models/bn_inception_${MODALITY}_init.caffemodel 2>&1 | tee ${LOG_FILE}
+$TOOLS/caffe train --solver=models_bak/${DATASET}/tsn_bn_inception_${MODALITY}_solver.prototxt  \
+   --weights=models_bak/bn_inception_${MODALITY}_init.caffemodel 2>&1 | tee ${LOG_FILE}
